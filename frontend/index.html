@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Task Tracker</title>
+  <script>
+    async function loadTasks() {
+      const response = await fetch("/api/tasks");
+      const tasks = await response.json();
+      document.getElementById("taskList").innerHTML = tasks.map(t => `<li>${t.text}</li>`).join("");
+    }
+
+    async function addTask() {
+      const input = document.getElementById("taskInput");
+      const text = input.value;
+      if (!text) return;
+
+      await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
+      });
+
+      input.value = "";
+      loadTasks();
+    }
+
+    window.onload = loadTasks;
+  </script>
+</head>
+<body>
+  <h1>Task Tracker</h1>
+  <input id="taskInput" placeholder="Enter task" />
+  <button onclick="addTask()">Add</button>
+  <ul id="taskList"></ul>
+</body>
+</html>
+
